@@ -1,7 +1,8 @@
 package org.caselli.comparativecognitiveworkflow.controller;
 
+import lombok.Data;
 import org.caselli.comparativecognitiveworkflow.services.AI4NeService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,26 +15,19 @@ public class AI4NeController {
     }
 
     @PostMapping("/simple_llm")
-    public ResponseEntity<String> routeWithSimpleLLM(@RequestBody RequestPayload request) {
-
-        Object res = this.ai4NeService.performRoutingWithSimpleLLM(request.request);
-        return ResponseEntity.ok(res.toString());
+    public Object routeWithSimpleLLM(@RequestBody RequestPayload request) {
+        return this.ai4NeService.performRoutingWithSimpleLLM(request.request);
     }
 
 
-    @PostMapping("/function_calling")
-    public ResponseEntity<String> routeWithFunctionCalling(@RequestBody RequestPayload request) {
-        Object res = this.ai4NeService.performRoutingWithFunctionCallingLLM(request.request);
-        return ResponseEntity.ok(res.toString());
+    @PostMapping(value = "/function_calling",  produces = MediaType.APPLICATION_JSON_VALUE)
+    public Object routeWithFunctionCalling(@RequestBody RequestPayload request) {
+        return this.ai4NeService.performRoutingWithFunctionCallingLLM(request.request);
     }
 
+    @Data
     public static class RequestPayload {
         private String request;
-        public String getRequest() {
-            return request;
-        }
-        public void setRequest(String request) {
-            this.request = request;
-        }
+
     }
 }
