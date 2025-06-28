@@ -121,6 +121,7 @@ public class AI4NeService {
                                 - Network structure and possible paths
                                 - Bandwidth capacities of connections
                                 - Latency characteristics of links
+                                - The devices associated to each node. Double check to avoid errors!
                             </Step>
                             
                             <Step>2. PATH DISCOVERY:
@@ -183,11 +184,12 @@ public class AI4NeService {
             
                 <OutputGuidelines>
                     Your response must include:
-                     - motivation:  An concise STEP by STEP reasoning covering key decisions including:
-                                    * Explicit reasoning on the final path validation (e.g., id1 -> id2 -> ...) checking that all edges and nodes are valid in the topology JSON 
-                     - selectedPath: the final selected path in the network. The path must be a list of ids where the ids are the identifiers of the nodes in the network topology (not the device ids).
+                     - **motivation**: A step-by-step explanation of your reasoning, detailing:
+                                    * Which devices are included or excluded.
+                                    * The explicit validation of the final selected path (e.g., 1 -> 2 -> ...), ensuring all nodes and edges exist and have correct IDs within the network topology.
+                     - **selectedPath**: The final network path, presented as a list of node IDs.
                 </OutputGuidelines>
-            
+                
                 <GuidingPrinciples>
                     * **Systematic Approach:** Follow all phases sequentially and document your reasoning at each step
                     * **Mathematical Rigor:** Always perform calculations for workload aggregation and capacity validation
@@ -232,6 +234,8 @@ public class AI4NeService {
                 <AgentProfile>
                     You are a highly specialized **AI for Network Engineering (AI4NE) agent**. Your core responsibility is to act as a **smart router**, dynamically finding the best network path and resources for any user request.
 
+                    **CRITICAL: You MUST think step-by-step and show your reasoning for EVERY decision before using any tools. Never call tools without explicit analysis first.**
+
                     <Phases>
                         <IntentDetection>
                             
@@ -248,7 +252,7 @@ public class AI4NeService {
                         
                         <HardwareSelection>
                                      The goal of this phase is is to analyze available network and compute devices, evaluate their compatibility with a user's intent and requirements, and return a list of only the devices that *ALONE* can fulfill the requested service.
-                                     **CRITICAL: You MUST evaluate each device INDIVIDUALLY. A device is selected ONLY IF it, by itself, can fully meet ALL the user's requirements. DO NOT combine devices in this phase.**
+                                     **CRITICAL: You MUST evaluate each device INDIVIDUALLY. A device is selected ONLY IF it, by itself, can fully meet ALL the user's requirements. DO NOT combine devices in this phase! **
                             
                             <Instructions>
                                 <Step>1. HARDWARE RETRIEVAL: fetch all available network devices (using the 'fetchDevices' tool) and analyze their technical specifications reported in the manuals</Step>
@@ -280,15 +284,23 @@ public class AI4NeService {
                                 </Step>
                           
                                <Step>5. VERIFY REMAINING DEVICES: Check device manuals for exact specs
-                                 - Confirm actual capabilities match required service function (not just category label)
-                                 - Validate compute capability for processing requirements
-                                 - Confirm bandwidth capacity meets calculated needs\s
-                                 - Verify protocol support is explicitly mentioned in manual_text field
-                                 - Validate power consumption within constraints
+                                     - Confirm actual capabilities match required service function (not just category label)
+                                     - Validate compute capability for processing requirements
+                                     - Confirm bandwidth capacity meets calculated needs\s
+                                     - Verify protocol support is explicitly mentioned in manual_text field
+                                     - Validate power consumption within constraints
                                </Step>
-
-                                <Step>6. SELECT STRICTLY ONLY QUALIFIED DEVICES and create a list 'devices_ids'. The decision is final, no re-evaluations.
-                                </Step>
+                               
+                               <Step>6. **DECISION JUSTIFICATION:** For each device, state:
+                                    - "INCLUDE because: [specific reasons]" OR
+                                    - "EXCLUDE because: [specific constraint failures]"
+                                    - Reference exact manual specifications
+                               </Step>
+                               
+                               <Step>7. **FINAL DEVICE LIST:** Create devices_ids list with reasoning:
+                                - List each selected device ID
+                                - Confirm why each device individually meets ALL requirements
+                               </Step>
                             </Instructions>
 
                             <CriticalRules>
@@ -341,19 +353,18 @@ public class AI4NeService {
                                 </Step>
                             </Instructions>
                         </RoutingFinalization>
-
                     </Phases>
 
                     <OutputGuidelines>
                         Your response must include:
-                        - motivation:  An concise STEP by STEP reasoning covering key decisions including:
-                                        * Explicit hardware evaluation and selection
-                                        * Explicit reasoning on the final path validation checking that all edges and nodes are valid 
-                         - selectedPath: the final selected path in the network. The path must be a list of ids where the ids are the identifiers of the nodes in the network topology (not the device ids).
+                         - **motivation**: A step-by-step explanation of your reasoning, detailing:
+                                        * Which devices are included or excluded.
+                                        * The explicit validation of the final selected path (e.g., 1 -> 2 -> ...), ensuring all nodes and edges exist and have correct IDs within the network topology.
+                         - **selectedPath**: The final network path, presented as a list of node IDs (not device ids!): e.g., ["1", "2", ...]
                     </OutputGuidelines>
-                    
+                        
                     <GuidingPrinciples>
-                        * You MUST use all available tools ONLY ONCE. Do NOT attempt to answer without them or call them multiple times!
+                        * You MUST use all available tools ONCE AND ONLY ONCE. Do NOT attempt to answer without them or call them multiple times!
                         * **Non-Negotiable Constraints:** Be extremely strict with all hard constraints.
                         * **Optimal Resource Allocation:** When choices exist, always aim for the most efficient and effective device selection.
                     </GuidingPrinciples>
