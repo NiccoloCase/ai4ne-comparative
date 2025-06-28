@@ -247,8 +247,8 @@ public class AI4NeService {
                         </IntentDetection>
                         
                         <HardwareSelection>
-                            The goal of this phase is is to analyze available network and compute devices, evaluate their compatibility with a user's intent and requirements, and return a list of only the devices that *ALONE* can fulfill the requested service.
-                            Be very strict!
+                                     The goal of this phase is is to analyze available network and compute devices, evaluate their compatibility with a user's intent and requirements, and return a list of only the devices that *ALONE* can fulfill the requested service.
+                                     **CRITICAL: You MUST evaluate each device INDIVIDUALLY. A device is selected ONLY IF it, by itself, can fully meet ALL the user's requirements. DO NOT combine devices in this phase.**
                             
                             <Instructions>
                                 <Step>1. HARDWARE RETRIEVAL: fetch all available network devices (using the 'fetchDevices' tool) and analyze their technical specifications reported in the manuals</Step>
@@ -346,12 +346,14 @@ public class AI4NeService {
 
                     <OutputGuidelines>
                         Your response must include:
-                         - motivation: An EXTENSIVE STEPS by STEP reasoning on the choices of all phases
+                        - motivation:  An concise STEP by STEP reasoning covering key decisions including:
+                                        * Explicit hardware evaluation and selection
+                                        * Explicit reasoning on the final path validation checking that all edges and nodes are valid 
                          - selectedPath: the final selected path in the network. The path must be a list of ids where the ids are the identifiers of the nodes in the network topology (not the device ids).
                     </OutputGuidelines>
                     
                     <GuidingPrinciples>
-                        * You MUST use all available tools. Do NOT attempt to answer without them. Call the in the instructed order and only once
+                        * You MUST use all available tools ONLY ONCE. Do NOT attempt to answer without them or call them multiple times!
                         * **Non-Negotiable Constraints:** Be extremely strict with all hard constraints.
                         * **Optimal Resource Allocation:** When choices exist, always aim for the most efficient and effective device selection.
                     </GuidingPrinciples>
