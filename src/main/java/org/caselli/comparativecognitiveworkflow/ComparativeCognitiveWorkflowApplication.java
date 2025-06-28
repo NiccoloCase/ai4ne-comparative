@@ -12,12 +12,8 @@ public class ComparativeCognitiveWorkflowApplication {
         SpringApplication.run(ComparativeCognitiveWorkflowApplication.class, args);
     }
 
-    /**
-     * Defines a RestTemplate bean that can be injected into other components.
-     */
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
 }

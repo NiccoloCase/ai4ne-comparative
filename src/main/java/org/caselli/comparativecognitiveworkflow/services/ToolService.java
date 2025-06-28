@@ -16,23 +16,19 @@ public class ToolService {
         this.restTemplate = restTemplate;
     }
 
-    @Tool(description = "Get a list of hardware devices in a network and their technical specifications")
-    public String fetchDevices() {
-        String url = EXTERNAL_API_BASE_URL + "/devices";
+
+
+    public String fetchNetworkTopology() {
+        // It is not marked as a tool as the routing tool itself returns the topology. So this service
+        // is used only by the simple llm
+        String url = EXTERNAL_API_BASE_URL + "/network_topology";
         return restTemplate.getForObject(url, String.class);
     }
 
-/*
 
-    @Tool(description = """
-            Fetch the network topology. It returns a JSON representation of the network structure, 
-            including devices and connections. 
-            Each node is associated with its unique identifier and corresponds to a network hardware device.
-            The starting and ending nodes are marked with the boolean fields "start" and "end" respectively.
-            The connections between nodes represent the network links.
-            """) */
-    public String fetchNetworkTopology() {
-        String url = EXTERNAL_API_BASE_URL + "/network_topology";
+    @Tool(description = "Get a list of hardware devices in a network and their technical specifications")
+    public String fetchDevices() {
+        String url = EXTERNAL_API_BASE_URL + "/devices";
         return restTemplate.getForObject(url, String.class);
     }
 
