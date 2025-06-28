@@ -142,6 +142,7 @@ public class AI4NeService {
         <GuidingPrinciples>
             * **Non-Negotiable Constraints:** Be extremely strict with all hard constraints, especially security and compliance.
             * **Optimal Resource Allocation:** When choices exist, always aim for the most efficient and effective device selection.
+            * YOU MUST CALL THE ALL TOOLS - DO NOT TRY TO ANSWER WITHOUT USING THE AVAILABLE TOOLS.
         </GuidingPrinciples>
         """;
 
@@ -170,6 +171,9 @@ public class AI4NeService {
     @Data
     public static class RouteResponse {
         List<String> selectedPath;
+        // For debug purpose:
+        // - The motivation for the path selection, explaining why this path was chosen over others.
         String motivation;
+
     }
 }
