@@ -19,6 +19,11 @@ public class AI4NeController {
         return this.ai4NeService.performRoutingWithSimpleLLM(request.request);
     }
 
+    @PostMapping("/reasoning_llm")
+    public Object routeWithReasoningLLM(@RequestBody RequestPayload request) {
+        return this.ai4NeService.performRoutingWithReasoningLLM(request.request);
+    }
+
 
     @PostMapping(value = "/function_calling",  produces = MediaType.APPLICATION_JSON_VALUE)
     public Object routeWithFunctionCalling(@RequestBody RequestPayload request) {
