@@ -40,6 +40,7 @@ public class AI4NeService {
 
         logger.info("Performing routing for request: " + inputRequest);
 
+
         String systemPromptTemplateString = """
             <AgentProfile>
                 You are a highly specialized **AI for Network Engineering (AI4NE) agent**. Your core responsibility is to act as a **smart router**, dynamically finding the best network path and resources for any user request.
@@ -122,7 +123,6 @@ public class AI4NeService {
                                 - Network structure and possible paths
                                 - Bandwidth capacities of connections
                                 - Latency characteristics of links
-                                - The devices associated to each node. Double check to avoid errors!
                             </Step>
                             
                             <Step>2. PATH DISCOVERY:
@@ -185,12 +185,11 @@ public class AI4NeService {
             
                 <OutputGuidelines>
                     Your response must include:
-                     - **motivation**: A step-by-step explanation of your reasoning, detailing:
-                                    * Which devices are included or excluded.
-                                    * The explicit validation of the final selected path (e.g., 1 -> 2 -> ...), ensuring all nodes and edges exist and have correct IDs within the network topology.
-                     - **selectedPath**: The final network path, presented as a list of node IDs.
+                     - motivation:  An concise STEP by STEP reasoning covering key decisions including:
+                                    * Explicit reasoning on the final path validation (e.g., id1 -> id2 -> ...) checking that all edges and nodes are valid in the topology JSON 
+                     - selectedPath: the final selected path in the network. The path must be a list of ids where the ids are the identifiers of the nodes in the network topology (not the device ids).
                 </OutputGuidelines>
-                
+            
                 <GuidingPrinciples>
                     * **Systematic Approach:** Follow all phases sequentially and document your reasoning at each step
                     * **Mathematical Rigor:** Always perform calculations for workload aggregation and capacity validation
@@ -409,7 +408,7 @@ public class AI4NeService {
                                                 </device_qualification>
                                                 
                                                 <nodes_reasoning>
-                                                Qualified nodes: [list of the IDs of nodes that use the qualified devices]
+                                                    Qualified nodes: [list of the IDs of nodes that use the qualified devices]
                                                 </nodes_reasoning>
                                                 
                                                 <topology_reasoning>
@@ -419,9 +418,17 @@ public class AI4NeService {
                                                 </topology_reasoning>
                                                 
                                                 <path_candidates>
-                                                    - Path 1: [a,b,c,...] - valid connections: a→b✓, b→c✓, ... ; check that the last node in the path is the end node
-                                                    ...
+                                                    - Path 1: [a,b,c,...] - valid connections: a→b✓, b→c✓, ... ; 
+                                                    ...                                          
                                                 </path_candidates>
+                                                
+                                                <paths_validation>
+                                                    If the last not of a path is not the end node, then the path is invalid!
+                                                    If any consecutive pair of nodes in a path does not have a direct connection, then the path is invalid!
+                                                    For each path, print:
+                                                        - Path [path_id]: ✓/✗ because [reason]
+                                                        ...                           
+                                                </paths_validation>
                                                 
                                                 <final_selection>
                                                     Selected: [path] because [optimization reasoning]
